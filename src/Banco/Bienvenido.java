@@ -6,7 +6,13 @@
 package Banco;
 
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -17,6 +23,7 @@ public class Bienvenido extends javax.swing.JFrame {
     /**
      * Creates new form Bienvenido
      */
+    Connection search;
     public Bienvenido() {
         initComponents();
          URL iconURL = getClass().getResource("/Imagenes/Manitas.png");
@@ -40,15 +47,16 @@ public class Bienvenido extends javax.swing.JFrame {
     private void initComponents() {
 
         TituloSup = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        jButton5 = new javax.swing.JButton();
+        Retirar = new javax.swing.JButton();
+        Depositar = new javax.swing.JButton();
+        Consultar = new javax.swing.JButton();
+        Salirse = new javax.swing.JButton();
+        TituloSup1 = new javax.swing.JLabel();
+        Comprar = new javax.swing.JButton();
         Saldo = new javax.swing.JTextField();
-        jButton6 = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
+        Pagar = new javax.swing.JButton();
+        Transferir = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
         Fondo = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -59,45 +67,81 @@ public class Bienvenido extends javax.swing.JFrame {
         getContentPane().add(TituloSup);
         TituloSup.setBounds(240, 200, 120, 40);
 
-        jButton1.setText("Retirar");
-        getContentPane().add(jButton1);
-        jButton1.setBounds(110, 360, 120, 40);
-
-        jButton2.setText("Depositar");
-        getContentPane().add(jButton2);
-        jButton2.setBounds(110, 320, 120, 40);
-
-        jButton3.setText("Consultar Saldo");
-        getContentPane().add(jButton3);
-        jButton3.setBounds(600, 130, 120, 40);
-
-        jButton4.setText("Salir");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        Retirar.setText("Retirar");
+        Retirar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                RetirarActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton4);
-        jButton4.setBounds(730, 610, 100, 50);
+        getContentPane().add(Retirar);
+        Retirar.setBounds(110, 360, 120, 40);
 
-        jLabel1.setFont(new java.awt.Font("Century Gothic", 2, 14)); // NOI18N
-        jLabel1.setText("Cajero a tu servicio , ¿Qué deseas realizar?");
-        getContentPane().add(jLabel1);
-        jLabel1.setBounds(170, 150, 300, 80);
+        Depositar.setText("Depositar");
+        Depositar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DepositarActionPerformed(evt);
+            }
+        });
+        getContentPane().add(Depositar);
+        Depositar.setBounds(110, 320, 120, 40);
 
-        jButton5.setText("Comprar Servicios");
-        getContentPane().add(jButton5);
-        jButton5.setBounds(110, 400, 130, 40);
+        Consultar.setText("Consultar Saldo");
+        Consultar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ConsultarActionPerformed(evt);
+            }
+        });
+        getContentPane().add(Consultar);
+        Consultar.setBounds(600, 130, 120, 40);
+
+        Salirse.setText("Salir");
+        Salirse.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SalirseActionPerformed(evt);
+            }
+        });
+        getContentPane().add(Salirse);
+        Salirse.setBounds(730, 610, 100, 50);
+
+        TituloSup1.setFont(new java.awt.Font("Century Gothic", 2, 14)); // NOI18N
+        TituloSup1.setText("Cajero a tu servicio , ¿Qué deseas realizar?");
+        getContentPane().add(TituloSup1);
+        TituloSup1.setBounds(170, 150, 300, 80);
+
+        Comprar.setText("Comprar Servicios");
+        Comprar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ComprarActionPerformed(evt);
+            }
+        });
+        getContentPane().add(Comprar);
+        Comprar.setBounds(110, 400, 130, 40);
+
+        Saldo.setEditable(false);
         getContentPane().add(Saldo);
         Saldo.setBounds(600, 180, 110, 40);
 
-        jButton6.setText("Pagar Servicios");
-        getContentPane().add(jButton6);
-        jButton6.setBounds(110, 280, 120, 40);
+        Pagar.setText("Pagar Servicios");
+        Pagar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                PagarActionPerformed(evt);
+            }
+        });
+        getContentPane().add(Pagar);
+        Pagar.setBounds(110, 280, 120, 40);
 
-        jButton7.setText("Transferir");
-        getContentPane().add(jButton7);
-        jButton7.setBounds(370, 280, 120, 40);
+        Transferir.setText("Transferir");
+        Transferir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TransferirActionPerformed(evt);
+            }
+        });
+        getContentPane().add(Transferir);
+        Transferir.setBounds(370, 280, 120, 40);
+
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/tarjeta.png"))); // NOI18N
+        getContentPane().add(jLabel1);
+        jLabel1.setBounds(230, 320, 330, 220);
 
         Fondo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/CajeroAtm.png"))); // NOI18N
         getContentPane().add(Fondo);
@@ -106,10 +150,68 @@ public class Bienvenido extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    private void SalirseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SalirseActionPerformed
           //Salirse del programa
         System.exit(0);
-    }//GEN-LAST:event_jButton4ActionPerformed
+    }//GEN-LAST:event_SalirseActionPerformed
+
+    private void ConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConsultarActionPerformed
+       if (Consultar.getText().equals("Consultar Saldo")){
+            try {
+                search = DriverManager.getConnection("jdbc:mysql://localhost/rdrr","root","");
+                String SQL = "SELECT * FROM cuentabancaria WHERE saldo='';";
+                PreparedStatement pst = search.prepareStatement(SQL);
+                ResultSet rs = pst.executeQuery();
+                 if(rs.next()){
+                     String is = rs.getString("Saldo"); //Aqui me trae el dato del campo "Saldo" que es 0.00
+                    Saldo.setText(is);
+                       }else{
+                     //No hacer nada 
+                 }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            //Si no se logra conectar
+            JOptionPane.showMessageDialog(null,"No se pudo conectar a la base de datos");
+        }   
+       }else{
+            JOptionPane.showMessageDialog(null,"Rellene los campos");
+    }
+    }//GEN-LAST:event_ConsultarActionPerformed
+
+    private void TransferirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TransferirActionPerformed
+        //Abre nueva pestaña que manda a transferir
+        Transferir tf = new Transferir();
+        tf.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_TransferirActionPerformed
+
+    private void PagarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PagarActionPerformed
+        //Abre nueva pestaña que manda a pagar
+        Pagar pg = new Pagar();
+        pg.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_PagarActionPerformed
+
+    private void ComprarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComprarActionPerformed
+        //Abre nueva pestaña que manda a comprar
+        Comprar cp = new Comprar();
+        cp.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_ComprarActionPerformed
+
+    private void DepositarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DepositarActionPerformed
+        //Abre nueva pestaña que manda a depositar 
+        Depositar dp = new Depositar();
+        dp.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_DepositarActionPerformed
+
+    private void RetirarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RetirarActionPerformed
+        //Abre nueva pestaña que manda a retirar
+        Retirar rt = new Retirar();
+        rt.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_RetirarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -147,16 +249,17 @@ public class Bienvenido extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton Comprar;
+    private javax.swing.JButton Consultar;
+    private javax.swing.JButton Depositar;
     private javax.swing.JLabel Fondo;
+    private javax.swing.JButton Pagar;
+    private javax.swing.JButton Retirar;
     private javax.swing.JTextField Saldo;
+    private javax.swing.JButton Salirse;
     private javax.swing.JLabel TituloSup;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
+    private javax.swing.JLabel TituloSup1;
+    private javax.swing.JButton Transferir;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 }
