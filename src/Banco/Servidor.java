@@ -1,8 +1,12 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Nombre: Regina Dominique Ríos Ramírez
+ * Tema del programa: ~ Cajero de Banco ATM ~
+ * Descripción: Cajero hecho en NetBeans junto con una base de datos que guarda los datos de los clientes y accede a ellos
+ * para realizar acciones como: depositar a cuenta, retirar fondos de cuenta, transferir de cuenta a cuenta
+ * pagar / comprar servicios y consultar respectivamente el saldo, se pretende que el proyecto use SOCKETS o RMI
+ * Fecha: ~ 29 de Mayo 2019 ~ 
  */
+
 package Banco;
 
 import java.net.InetAddress;
@@ -18,7 +22,7 @@ import java.util.logging.Logger;
  * @author NaruHina
  */
 
-//Verificar Clase
+//Verificar Clase ESTO ES PAL RMI
 public class Servidor {
         public static void main(String args[]){
         try{
