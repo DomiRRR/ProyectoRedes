@@ -10,6 +10,10 @@
 package Banco;
 
 import java.net.URL;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
@@ -107,6 +111,26 @@ public class Pagar extends javax.swing.JFrame {
 
     private void PagarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PagarActionPerformed
         //BD
+        if (Pagar.getText().equals("Pagar")) {
+          String cant = Cantidad.getText();
+        if(Cantidad.getText().equals("") && Servicio.getText().equals("")){  
+              JOptionPane.showMessageDialog(null,"No puede dejar los campos vacios");
+       }else{
+             try { 
+                RMI rmii;
+                Registry reg = LocateRegistry.getRegistry("127.0.0.1", 1099);
+                rmii = (RMI) reg.lookup("Objeto remoto");
+                rmii.Retirar(cant);   
+               }
+            catch(RemoteException e) {
+                e.printStackTrace();
+            }
+             catch (NotBoundException ex) {
+             ex.printStackTrace();
+        }  
+                 }
+    }
+        
     }//GEN-LAST:event_PagarActionPerformed
 
     private void CantidadKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_CantidadKeyTyped

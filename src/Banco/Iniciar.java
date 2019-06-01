@@ -9,11 +9,10 @@
 package Banco;
 
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
@@ -21,9 +20,8 @@ import javax.swing.JOptionPane;
  *
  * @author NaruHina
  */
-public class Iniciar extends javax.swing.JFrame {
+public class Iniciar extends javax.swing.JFrame implements Runnable{
 
-    Connection buscar;
     public Iniciar() {
         initComponents();
         URL iconURL = getClass().getResource("/Imagenes/Registro.jpg");
@@ -124,46 +122,25 @@ public class Iniciar extends javax.swing.JFrame {
     if (BtnIngresar.getText().equals("Ingresar")) {
           String user = Correito.getText(); //Agarrar lo de las cajas de texto de correo y contraseña
           String contra = Password.getText();
-        if(Correito.getText()!=null && Password.getText()!= null){  
-            try {
-                buscar = DriverManager.getConnection("jdbc:mysql://localhost/rdrr","root","");
-                String SQL = "SELECT * FROM clientes WHERE correo=? and contraseña=?";
-               // String Concat = "Select CONCAT(Nombre, ApellidoPaterno, ApellidoMaterno) As Nombre From clientes WHERE idClientes = ?";
-                PreparedStatement pst = buscar.prepareStatement(SQL);
-                pst.setString(1,user);
-                pst.setString(2,contra);
-                ResultSet rs = pst.executeQuery();
-                
-                //Me tarde un buen rato para lograr que saliera el nombre personalizado TuT 
-                String SQL1= "Select CONCAT(Nombre, ' ', ApellidoPaterno) As Nombre From Clientes where correo=? and contraseña=?;";
-                PreparedStatement ps1 = buscar.prepareStatement(SQL1);
-                ps1.setString(1,user);
-                ps1.setString(2,contra);
-                ResultSet rs1 = ps1.executeQuery();
-                 if(rs.next() && rs1.next()){
-                     String is = rs1.getString("Nombre");
-                     JOptionPane.showMessageDialog(null,"¡ Bienvenido nuevamente !"+"\n"+is);
-                   //  System.out.printf("%s",is);
-                        setVisible(false);
-                        Bienvenido Bd = new Bienvenido();
-                        Bd.setVisible(true);
-                }else{
-                      JOptionPane.showMessageDialog(null,"El/Los campos se encuentran vacios, favor de rellenarlos");
-                      JOptionPane.showMessageDialog(null,"El correo y/o contraseña son inválidos, inténtalo de nuevo");
-                      Correito.setText("");
-                      Password.setText("");
-                 }
-            
-                //Statement st = buscar.createStatement(); //Crear el statement
-                //st.executeQuery("SELECT COUNT(idClientes) AS i FROM clientes WHERE correo = '"+user+"'"+"AND contraseña='"+contra+"'");
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            //Si no se logra conectar
-            JOptionPane.showMessageDialog(null,"No se pudo conectar a la base de datos");
-        }
-        }   
+        if(Correito.getText().equals("") && Password.getText().equals("")){  
+              JOptionPane.showMessageDialog(null,"El correo y/o contraseña son inválidos, inténtalo de nuevo");
+              Correito.setText("");
+              Password.setText("");
        }else{
-            JOptionPane.showMessageDialog(null,"Rellene los campos");
+             try { 
+                RMI rmii;
+                Registry reg = LocateRegistry.getRegistry("127.0.0.1", 1099);
+                rmii = (RMI) reg.lookup("Objeto remoto");
+                rmii.IniciarS(user,contra);   
+                  //  JOptionPane.showMessageDialog(null,"El/Los campos se encuentran vacios, favor de rellenarlos"); 
+               }
+            catch(RemoteException e) {
+                e.printStackTrace();
+            }
+             catch (NotBoundException ex) {
+             ex.printStackTrace();
+        }  
+                 }
     }
     }//GEN-LAST:event_BtnIngresarActionPerformed
 
@@ -207,6 +184,10 @@ public class Iniciar extends javax.swing.JFrame {
                 new Iniciar().setVisible(true);
             }
         });
+    }
+    
+    public void run() {
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

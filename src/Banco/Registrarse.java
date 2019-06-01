@@ -10,10 +10,10 @@
 package Banco;
 
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.Calendar;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
@@ -23,7 +23,6 @@ import javax.swing.JOptionPane;
  * @author NaruHina
  */
 public class Registrarse extends javax.swing.JFrame {
-     Connection con; //Para que se comunique con la DB, se declara de manera global
   public Registrarse() {
         initComponents();
         URL iconURL = getClass().getResource("/Imagenes/Credenciales.png");
@@ -304,42 +303,46 @@ public class Registrarse extends javax.swing.JFrame {
 
     private void GuardarDatosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_GuardarDatosActionPerformed
         //Acción que guardará lo escrito en las cajas de texto a la base de datos
-        if (GuardarDatos.getText().equals("Guardar")) {
+        if (GuardarDatos.getText().equals("Guardar")) { //Verificando si el botón elegido es Guardar
            if (CampoNombre.getText().equals("") && ApePaterno.getText().equals("") && ApeMaterno.getText().equals("") && telefonito.getText().equals("") && direcci.getText().equals("") && CampoContrasena.getText().equals("") && CorreoEl.getText().equals("")) {
                 JOptionPane.showMessageDialog(null, "Algunos campos o todos están vacíos");
-                JOptionPane.showMessageDialog(null,"Rellene los campos faltantes por favor");
+                JOptionPane.showMessageDialog(null,"Rellene los campos faltantes por favor"); //Si faltan datos pos no hace nada
             }else{
+               try { 
                 int año = jDateChooser1.getCalendar().get(Calendar.YEAR);
                 int mes = jDateChooser1.getCalendar().get(Calendar.MONTH);
                 int dia = jDateChooser1.getCalendar().get(Calendar.DAY_OF_MONTH);
-                String fechaNacimiento = ""+año+"-"+mes+"-"+dia; //Guardar el dia, mes, año 
+                String fechaNacimiento = ""+año+"-"+mes+"-"+dia; //Guardar el dia, mes, año del JDATECHOOSER
                 
-                try {
-                con = DriverManager.getConnection("jdbc:mysql://localhost/rdrr","root","");
-                Statement st = con.createStatement(); //Insertar los datos a la tabla cliente
-                Statement st1 = con.createStatement(); //Insertar los datos de la tarjeta generada
-                Statement st2 = con.createStatement(); //Insertar la CLABE Interbancaria
-                st.executeUpdate("INSERT INTO `clientes`(`Nombre`, `ApellidoPaterno`, `ApellidoMaterno`, `telefono`, `dirección`, `contraseña`, `correo`, `fechaNac`) VALUES ('"+CampoNombre.getText()+"','"+ApePaterno.getText()+"','"+ApeMaterno.getText()+"',"
-                        + "'"+telefonito.getText()+"','"+direcci.getText()+"','"+CampoContrasena.getText()+"','"+CorreoEl.getText()+"','"+fechaNacimiento+"')");
-                st1.executeUpdate("INSERT INTO `tarjeta`(`NumeroTarjeta`, `NIP`, `CVV`, `MesVencimiento`, `AnioVencimiento`) VALUES ('"+Tarjeta.getText()+"','"+ElNip.getText()+"','"+elcv.getText()+"','"+NumAleatorio2.getText()+"','"+NumAleatorio1.getText()+"')");
-                st2.executeUpdate("INSERT INTO `cuentabancaria`(`CLABE`, `saldo`) VALUES ('"+laclabe.getText()+"','"+00000.000+"')");
-
-            /*
-            Asi no era AJJAJAJAJA, habia puesto un contador :'v
-            "INSERT INTO clientes VALUES('"+CampoNombre.getText()+"','"+ApePaterno.getText()+"','"+ApeMaterno.getText()+"',"
-                    + "'"+telefonito.getText()+"','"+direcci.getText()+"','"+CampoContrasena.getText()+"','"+CorreoEl.getText()+"','"+fechaNacimiento+"')");
-            */
-
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-
-            //Si no se logra conectar
-            JOptionPane.showMessageDialog(null,"No se pudo conectar a la base de datos");
-        }
-            //Mensaje de confirmación
+                String CN = CampoNombre.getText();
+                String Ap = ApePaterno.getText();
+                String Am = ApeMaterno.getText();
+                String tel = telefonito.getText();
+                String dir = direcci.getText();
+                String CC = CampoContrasena.getText();
+                String corre = CorreoEl.getText();
+                String t = Tarjeta.getText();
+                String ni = ElNip.getText();
+                String cv = elcv.getText();
+                String uno = NumAleatorio1.getText();
+                String dos = NumAleatorio2.getText();
+                String cb = laclabe.getText();
+                
+                //Cree nuevas variables pa mandarlas como parametros en el RMI
+                RMI rmii;
+                Registry reg = LocateRegistry.getRegistry("127.0.0.1", 1099);
+                rmii = (RMI) reg.lookup("Objeto remoto");
+                rmii.Registrar(CN,Ap,Am,tel,dir,CC,corre,fechaNacimiento,t,ni,cv,uno,dos,cb);
+                //Mensaje de confirmación
             JOptionPane.showMessageDialog(null,"Te has registrado en el sistema");
-            
-          //"Limpiando" las cajas de texto
+               }
+            catch(RemoteException e) {
+                e.printStackTrace();
+            }
+             catch (NotBoundException ex) {
+           ex.printStackTrace();
+        }
+               //"Limpiando" las cajas de texto
            CampoNombre.setText("");
            ApePaterno.setText("");
            ApeMaterno.setText("");
@@ -355,7 +358,7 @@ public class Registrarse extends javax.swing.JFrame {
            elcv.setText("");
            laclabe.setText("");
             JOptionPane.showMessageDialog(null,"Sistema listo para otro registro");
-           }  
+           }
     }
     }//GEN-LAST:event_GuardarDatosActionPerformed
 
