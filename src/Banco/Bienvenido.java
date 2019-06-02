@@ -10,6 +10,10 @@
 package Banco;
 
 import java.net.URL;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -44,7 +48,6 @@ public class Bienvenido extends javax.swing.JFrame {
         Salirse = new javax.swing.JButton();
         TituloSup1 = new javax.swing.JLabel();
         Comprar = new javax.swing.JButton();
-        Saldo = new javax.swing.JTextField();
         Pagar = new javax.swing.JButton();
         Transferir = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
@@ -83,7 +86,7 @@ public class Bienvenido extends javax.swing.JFrame {
             }
         });
         getContentPane().add(Consultar);
-        Consultar.setBounds(600, 130, 120, 40);
+        Consultar.setBounds(600, 180, 120, 40);
 
         Salirse.setText("Salir");
         Salirse.addActionListener(new java.awt.event.ActionListener() {
@@ -107,10 +110,6 @@ public class Bienvenido extends javax.swing.JFrame {
         });
         getContentPane().add(Comprar);
         Comprar.setBounds(110, 400, 130, 40);
-
-        Saldo.setEditable(false);
-        getContentPane().add(Saldo);
-        Saldo.setBounds(600, 180, 110, 40);
 
         Pagar.setText("Pagar Servicios");
         Pagar.addActionListener(new java.awt.event.ActionListener() {
@@ -147,22 +146,19 @@ public class Bienvenido extends javax.swing.JFrame {
     }//GEN-LAST:event_SalirseActionPerformed
 
     private void ConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConsultarActionPerformed
-     //Solo hace una consulta, un select
-            try {
-                search = DriverManager.getConnection("jdbc:mysql://localhost/rdrr","root","");
-                String SQL = "SELECT * FROM cuentabancaria WHERE saldo='';";
-                PreparedStatement pst = search.prepareStatement(SQL);
-                ResultSet rs = pst.executeQuery();
-                 if(rs.next()){
-                     String is = rs.getString("Saldo"); //Aqui me trae el dato del campo "Saldo" que es 0.00
-                    Saldo.setText(is);
-                       }else{
-                     //No hacer nada 
-                 }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            //Si no se logra conectar
-            JOptionPane.showMessageDialog(null,"No se pudo conectar a la base de datos");
+     //Intentando RMI
+             try { 
+                String id= "4";
+                RMI rmii;
+                Registry reg = LocateRegistry.getRegistry("127.0.0.1", 1099);
+                rmii = (RMI) reg.lookup("Objeto remoto");
+                rmii.Consultar(id);  //llamar al método retirar, ya que pagar cuenta como un retiro
+               }
+            catch(RemoteException e) {
+                e.printStackTrace();
+            }
+             catch (NotBoundException ex) {
+             ex.printStackTrace();
         }
     }//GEN-LAST:event_ConsultarActionPerformed
 
@@ -243,7 +239,6 @@ public class Bienvenido extends javax.swing.JFrame {
     private javax.swing.JLabel Fondo;
     private javax.swing.JButton Pagar;
     private javax.swing.JButton Retirar;
-    private javax.swing.JTextField Saldo;
     private javax.swing.JButton Salirse;
     private javax.swing.JLabel TituloSup;
     private javax.swing.JLabel TituloSup1;

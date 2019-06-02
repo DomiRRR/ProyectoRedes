@@ -10,6 +10,10 @@
 package Banco;
 
 import java.net.URL;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
@@ -33,17 +37,19 @@ public class Transferir extends javax.swing.JFrame {
         NumCuent = new javax.swing.JLabel();
         Deposit = new javax.swing.JButton();
         Regres = new javax.swing.JButton();
-        Cuenta = new javax.swing.JTextField();
+        CLABET = new javax.swing.JTextField();
         Canti = new javax.swing.JLabel();
         Cantidad = new javax.swing.JTextField();
+        Clabe1 = new javax.swing.JLabel();
+        ClabeP = new javax.swing.JTextField();
         Fondo = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(null);
 
-        NumCuent.setText("Número de Cuenta ");
+        NumCuent.setText("CLABE a Transferir");
         getContentPane().add(NumCuent);
-        NumCuent.setBounds(120, 10, 120, 30);
+        NumCuent.setBounds(130, 50, 120, 30);
 
         Deposit.setText("Transferir");
         Deposit.addActionListener(new java.awt.event.ActionListener() {
@@ -63,17 +69,17 @@ public class Transferir extends javax.swing.JFrame {
         getContentPane().add(Regres);
         Regres.setBounds(0, 190, 90, 40);
 
-        Cuenta.addKeyListener(new java.awt.event.KeyAdapter() {
+        CLABET.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                CuentaKeyTyped(evt);
+                CLABETKeyTyped(evt);
             }
         });
-        getContentPane().add(Cuenta);
-        Cuenta.setBounds(120, 40, 130, 30);
+        getContentPane().add(CLABET);
+        CLABET.setBounds(120, 80, 150, 30);
 
         Canti.setText("Cantidad");
         getContentPane().add(Canti);
-        Canti.setBounds(150, 70, 60, 30);
+        Canti.setBounds(160, 110, 60, 30);
 
         Cantidad.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
@@ -81,7 +87,19 @@ public class Transferir extends javax.swing.JFrame {
             }
         });
         getContentPane().add(Cantidad);
-        Cantidad.setBounds(140, 100, 90, 30);
+        Cantidad.setBounds(140, 140, 90, 30);
+
+        Clabe1.setText("CLABE Personal");
+        getContentPane().add(Clabe1);
+        Clabe1.setBounds(140, 0, 100, 20);
+
+        ClabeP.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                ClabePKeyTyped(evt);
+            }
+        });
+        getContentPane().add(ClabeP);
+        ClabeP.setBounds(110, 20, 160, 30);
 
         Fondo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/Transferencia.png"))); // NOI18N
         getContentPane().add(Fondo);
@@ -98,10 +116,32 @@ public class Transferir extends javax.swing.JFrame {
     }//GEN-LAST:event_RegresActionPerformed
 
     private void DepositActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DepositActionPerformed
-        //Aqui deberia de usar el RMI para efectuar las consultas en lugar de consultar directamente
+        //BD CHECAR AUNQUE SOLO FUNCIONARIA LA PRIMERA VEZ QUE SE REALIZA
+         if (Deposit.getText().equals("Transferir")) {
+          String Trp = ClabeP.getText();
+          String TrO = CLABET.getText();
+        if(ClabeP.getText().equals("") && CLABET.getText().equals("") && Cantidad.getText().equals("")){  
+              JOptionPane.showMessageDialog(null,"No puedes dejar estos campos vacios");
+       }else{
+             try { 
+                String c1 = Cantidad.getText();
+                String id = "5";
+                RMI rmii;
+                Registry reg = LocateRegistry.getRegistry("127.0.0.1", 1099);
+                rmii = (RMI) reg.lookup("Objeto remoto");
+                rmii.Transferir(Trp,TrO,c1,id);   
+               }
+            catch(RemoteException e) {
+                e.printStackTrace();
+            }
+             catch (NotBoundException ex) {
+             ex.printStackTrace();
+        }  
+                 }
+    }
     }//GEN-LAST:event_DepositActionPerformed
 
-    private void CuentaKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_CuentaKeyTyped
+    private void CLABETKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_CLABETKeyTyped
        char validar = evt.getKeyChar();
        if(Character.isLetter(validar)){
            evt.consume();
@@ -109,11 +149,11 @@ public class Transferir extends javax.swing.JFrame {
        }
        
      int limite  = 18;
-     if (Cuenta.getText().length() == limite){
+     if (CLABET.getText().length() == limite){
          evt.consume();
          JOptionPane.showMessageDialog(rootPane, "No pasa de 18 dígitos");
      }
-    }//GEN-LAST:event_CuentaKeyTyped
+    }//GEN-LAST:event_CLABETKeyTyped
 
     private void CantidadKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_CantidadKeyTyped
       char validar = evt.getKeyChar();
@@ -122,6 +162,20 @@ public class Transferir extends javax.swing.JFrame {
            JOptionPane.showMessageDialog(rootPane, "¡ Favor de ingresar numeros !");
        }
     }//GEN-LAST:event_CantidadKeyTyped
+
+    private void ClabePKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_ClabePKeyTyped
+        char validar = evt.getKeyChar();
+       if(Character.isLetter(validar)){
+           evt.consume();
+           JOptionPane.showMessageDialog(rootPane, "¡ Favor de ingresar los 18 digitos de la CLABE a la cual va a transferir !");
+       }
+       
+     int limite  = 18;
+     if (CLABET.getText().length() == limite){
+         evt.consume();
+         JOptionPane.showMessageDialog(rootPane, "No pasa de 18 dígitos");
+     }
+    }//GEN-LAST:event_ClabePKeyTyped
 
     /**
      * @param args the command line arguments
@@ -159,9 +213,11 @@ public class Transferir extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField CLABET;
     private javax.swing.JLabel Canti;
     private javax.swing.JTextField Cantidad;
-    private javax.swing.JTextField Cuenta;
+    private javax.swing.JLabel Clabe1;
+    private javax.swing.JTextField ClabeP;
     private javax.swing.JButton Deposit;
     private javax.swing.JLabel Fondo;
     private javax.swing.JLabel NumCuent;

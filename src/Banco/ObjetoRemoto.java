@@ -33,33 +33,135 @@ public class ObjetoRemoto extends UnicastRemoteObject implements RMI{
     }
     
     @Override
-    public double Depositar(double a) throws RemoteException {
-        return 0;
+    public void Depositar(String canti,String id) throws RemoteException {
+                try{
+                con = DriverManager.getConnection("jdbc:mysql://localhost/cursi","root","");
+                String Consulta = "SELECT * FROM `cuentabancaria` WHERE clabe='300007477990652992' and saldo = '0.00'"; 
+                PreparedStatement ps1 = con.prepareStatement(Consulta);
+                ResultSet rs1 = ps1.executeQuery();
+                
+                if(rs1.next()){ //Solo depositará una sola vez :'v
+                     String saldo = rs1.getString("saldo");
+                     if(saldo.contains("0.00")){
+                         String deposito = "UPDATE cuentabancaria SET idClabe=?,CLABE=?,saldo = ? WHERE idClabe=?";  
+                         PreparedStatement pst2 = con.prepareStatement(deposito);
+                         String clabe="300007477990652992";
+                         pst2.setString(1,id);
+                         pst2.setString(2,clabe);
+                         pst2.setString(3,canti);
+                         pst2.setString(4,id);
+                         int rs3 = pst2.executeUpdate();
+                        JOptionPane.showMessageDialog(null,"Tu depósito fue hecho con éxito.");
+                        JOptionPane.showMessageDialog(null,"Se depósito"+"\n"+canti);
+
+                     }
+                } 
+                
+//                if(rs1.next()){
+//                         JOptionPane.showMessageDialog(null,"Ya deja de meter dinero");
+//                         String deposito = "UPDATE cuentabancaria SET idClabe=?,CLABE=?,saldo = ? WHERE idClabe=?";  
+//                         PreparedStatement pst2 = con.prepareStatement(deposito);
+//                         String clabe="300007477990652992";
+//                         pst2.setString(1,id);
+//                         pst2.setString(2,clabe);
+//                         pst2.setString(3,canti);
+//                         pst2.setString(4,id);
+//                        int rs3 = pst2.executeUpdate();
+//                        JOptionPane.showMessageDialog(null,"Tu depósito fue hecho con éxito.");
+//                        JOptionPane.showMessageDialog(null,"Se te depósito"+"\n"+canti);
+//                     }
+                }catch(SQLException ex) {
+                    ex.printStackTrace();
+                // Si no se logra conectar
+                JOptionPane.showMessageDialog(null,"No se pudo conectar a la base de datos");
+             }
     }
 
     @Override
-    public double Transferir(double a) throws RemoteException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public double Retirar(String a) throws RemoteException {
-       con = DriverManager.getConnection("jdbc:mysql://localhost/rdrr","root","");
-                String SQL = "SELECT * FROM clientes WHERE correo=? and contraseña=?";
-               // String Concat = "Select CONCAT(Nombre, ApellidoPaterno, ApellidoMaterno) As Nombre From clientes WHERE idClientes = ?";
+    public void Transferir(String a,String b, String c,String d) throws RemoteException {
+        try {
+            //No se si funcione al 100%, funciona con una cuenta a otra jajaja pero no verifica si la otra tiene dinero
+                con = DriverManager.getConnection("jdbc:mysql://localhost/cursi","root","");
+                String SQL = "SELECT * FROM cuentabancaria WHERE CLABE=?";
                 PreparedStatement pst = con.prepareStatement(SQL);
+                pst.setString(1,a);
+                ResultSet rs = pst.executeQuery();
+                
+                String SQL1 = "SELECT * FROM cuentabancaria WHERE CLABE=?"; 
+                //SELECT * FROM `cuentabancaria` WHERE CLABE = '300007477990652992'
+                PreparedStatement pst1 = con.prepareStatement(SQL1);
+                pst1.setString(1,b);
+                ResultSet rs2 = pst1.executeQuery();
+                //(Trp,TrO,c1,id);  
+                //"UPDATE cuentabancaria SET CLABE=?, saldo = ? WHERE 1";
+                String Update = "UPDATE cuentabancaria SET idClabe=?,CLABE=?,saldo = ? WHERE idClabe=?";
+                PreparedStatement pst2 = con.prepareStatement(Update);
+                pst2.setString(1,d);
+                pst2.setString(2,b);
+                pst2.setString(3,c);
+                pst2.setString(4,d);
+                int rs3 = pst2.executeUpdate();
+                 if(rs.next()){
+                     JOptionPane.showMessageDialog(null,"Transferencia exitosa");
+                     JOptionPane.showMessageDialog(null,"Se abonaron"+"\n"+c);
+                }
+           
+                //Statement st = buscar.createStatement(); //Crear el statement
+                //st.executeQuery("SELECT COUNT(idClientes) AS i FROM clientes WHERE correo = '"+user+"'"+"AND contraseña='"+contra+"'");
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            //Si no se logra conectar
+            JOptionPane.showMessageDialog(null,"No se pudo conectar a la base de datos");
+        }
+    
+    }
+
+   //Verificar si funciona owo IMPORTANTE 
+    @Override
+    public void Retirar(String Quantitty,String id) throws RemoteException {
+            try{
+                con = DriverManager.getConnection("jdbc:mysql://localhost/cursi","root","");
+                String Consulta = "SELECT * FROM `cuentabancaria` WHERE clabe='300007477990652992' and saldo = '0.00'"; 
+                PreparedStatement ps1 = con.prepareStatement(Consulta);
+                ResultSet rs1 = ps1.executeQuery();
+                if(rs1.next()){
+                     String saldo = rs1.getString("saldo");
+                     if(saldo.contains("0.00")){
+                         JOptionPane.showMessageDialog(null, "No cuentas con fondos para retirar, procede a depositar en el mejor de los casos"); 
+                     }
+                }else{
+                        String retiro = "UPDATE cuentabancaria SET idClabe=?,CLABE= ? ,saldo = saldo - ? WHERE idClabe=?";  
+                        PreparedStatement pst2 = con.prepareStatement(retiro);
+                        String clabe="300007477990652992";
+                        pst2.setString(1,id);
+                        pst2.setString(2,clabe);
+                        pst2.setString(3,Quantitty);
+                        pst2.setString(4,id);
+                        int rs3 = pst2.executeUpdate();
+                     JOptionPane.showMessageDialog(null,"Pago exitoso / Retiro exitoso");
+                     JOptionPane.showMessageDialog(null,"Cantidad: "+"\n"+Quantitty);
+                
+                }
+            }catch(SQLException ex) {
+            ex.printStackTrace();
+           // Si no se logra conectar
+            JOptionPane.showMessageDialog(null,"No se pudo conectar a la base de datos");
+                 }
     }
 
     @Override
     public void Registrar(String N,String AP, String AM, String t,String d, String C,String Co,String fc, String T,String Ni,String CV,String num1, String num2,String cl) throws RemoteException {
                 try {
-                con = DriverManager.getConnection("jdbc:mysql://localhost/rdrr","root","");
+                con = DriverManager.getConnection("jdbc:mysql://localhost/cursi","root","");
                 Statement st = con.createStatement(); //Insertar los datos a la tabla cliente
                 Statement st1 = con.createStatement(); //Insertar los datos de la tarjeta generada
                 Statement st2 = con.createStatement(); //Insertar la CLABE Interbancaria
-                st.executeUpdate("INSERT INTO `clientes`(`Nombre`, `ApellidoPaterno`, `ApellidoMaterno`, `telefono`, `dirección`, `contraseña`, `correo`, `fechaNac`) VALUES ('"+N+"','"+AP+"','"+AM+"',"
+                
+                //RECUERDA PONERLE EL  acento a "dirección" cuando cambies a la BASE DE DATOS RDRR
+                st.executeUpdate("INSERT INTO `clientes`(`Nombre`, `ApellidoPaterno`, `ApellidoMaterno`, `telefono`, `direccion`, `contraseña`, `correo`, `fechaNac`) VALUES ('"+N+"','"+AP+"','"+AM+"',"
                         + "'"+t+"','"+d+"','"+C+"','"+Co+"','"+fc+"')");
-                st1.executeUpdate("INSERT INTO `tarjeta`(`NumeroTarjeta`, `NIP`, `CVV`, `MesVencimiento`, `AnioVencimiento`) VALUES ('"+T+"','"+Ni+"','"+CV+"','"+num1+"','"+num2+"')");
+                                                          //cambiarle aqui a NumeroTarjeta Cuando use la BD, rdrr
+                st1.executeUpdate("INSERT INTO `tarjeta`(`NúmeroCuenta`, `NIP`, `CVV`, `MesVencimiento`, `AnioVencimiento`) VALUES ('"+T+"','"+Ni+"','"+CV+"','"+num1+"','"+num2+"')");
                 st2.executeUpdate("INSERT INTO `cuentabancaria`(`CLABE`, `saldo`) VALUES ('"+cl+"','"+00000.000+"')");
 
             /*
@@ -79,7 +181,7 @@ public class ObjetoRemoto extends UnicastRemoteObject implements RMI{
     @Override
     public void IniciarS(String Cor, String Cont) {
        try {
-                con = DriverManager.getConnection("jdbc:mysql://localhost/rdrr","root","");
+                con = DriverManager.getConnection("jdbc:mysql://localhost/cursi","root","");
                 String SQL = "SELECT * FROM clientes WHERE correo=? and contraseña=?";
                // String Concat = "Select CONCAT(Nombre, ApellidoPaterno, ApellidoMaterno) As Nombre From clientes WHERE idClientes = ?";
                 PreparedStatement pst = con.prepareStatement(SQL);
@@ -103,6 +205,27 @@ public class ObjetoRemoto extends UnicastRemoteObject implements RMI{
             
                 //Statement st = buscar.createStatement(); //Crear el statement
                 //st.executeQuery("SELECT COUNT(idClientes) AS i FROM clientes WHERE correo = '"+user+"'"+"AND contraseña='"+contra+"'");
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            //Si no se logra conectar
+            JOptionPane.showMessageDialog(null,"No se pudo conectar a la base de datos");
+        }
+    }
+
+    @Override
+    public void Consultar(String id) throws RemoteException {
+         try {
+                con = DriverManager.getConnection("jdbc:mysql://localhost/cursi","root","");
+                String SQL = "SELECT * FROM `cuentabancaria` WHERE idClabe=? and saldo";
+                PreparedStatement pst = con.prepareStatement(SQL);
+                pst.setString(1,id);
+                ResultSet rs = pst.executeQuery();
+                 if(rs.next()){
+                     String is = rs.getString("Saldo"); //Aqui me trae el dato del campo "Saldo";
+                     JOptionPane.showMessageDialog(null,"Tu saldo es de "+is);
+                       }else{
+                     //No hacer nada 
+                 }
         } catch (SQLException ex) {
             ex.printStackTrace();
             //Si no se logra conectar

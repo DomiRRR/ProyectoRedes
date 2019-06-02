@@ -10,6 +10,10 @@
 package Banco;
 
 import java.net.URL;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
@@ -36,7 +40,7 @@ public class Comprar extends javax.swing.JFrame {
         Servic = new javax.swing.JLabel();
         Servicio = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        Can = new javax.swing.JTextField();
         Fondo = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -52,6 +56,11 @@ public class Comprar extends javax.swing.JFrame {
         Regresar.setBounds(190, 240, 80, 30);
 
         Comprar.setText("Comprar");
+        Comprar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ComprarActionPerformed(evt);
+            }
+        });
         getContentPane().add(Comprar);
         Comprar.setBounds(10, 240, 80, 30);
 
@@ -77,13 +86,13 @@ public class Comprar extends javax.swing.JFrame {
         getContentPane().add(jLabel1);
         jLabel1.setBounds(30, 170, 60, 40);
 
-        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
+        Can.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
-                jTextField1KeyTyped(evt);
+                CanKeyTyped(evt);
             }
         });
-        getContentPane().add(jTextField1);
-        jTextField1.setBounds(80, 180, 110, 30);
+        getContentPane().add(Can);
+        Can.setBounds(80, 180, 110, 30);
 
         Fondo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/Carrito.png"))); // NOI18N
         getContentPane().add(Fondo);
@@ -107,13 +116,36 @@ public class Comprar extends javax.swing.JFrame {
        }
     }//GEN-LAST:event_ServicioKeyTyped
 
-    private void jTextField1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyTyped
+    private void CanKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_CanKeyTyped
        char validar = evt.getKeyChar();
        if(Character.isLetter(validar)){
            evt.consume();
            JOptionPane.showMessageDialog(rootPane, "¡ Favor de ingresar la cantidad en números");
        }
-    }//GEN-LAST:event_jTextField1KeyTyped
+    }//GEN-LAST:event_CanKeyTyped
+
+    private void ComprarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComprarActionPerformed
+
+        String cantidad = Can.getText();
+        if(Servicio.getText().equals("") && Can.getText().equals("")){  
+              JOptionPane.showMessageDialog(null,"Campos requeridos, no se pueden quedar vacios");
+       }else{
+             try { 
+                String id = "4";
+                RMI rmii;
+                Registry reg = LocateRegistry.getRegistry("127.0.0.1", 1099);
+                rmii = (RMI) reg.lookup("Objeto remoto");
+                rmii.Depositar(cantidad,id);  
+                JOptionPane.showMessageDialog(null,"¡ Muchas Gracias por tu compra!");
+               }
+            catch(RemoteException e) {
+                e.printStackTrace();
+            }
+             catch (NotBoundException ex) {
+             ex.printStackTrace();
+        }  
+                 }
+    }//GEN-LAST:event_ComprarActionPerformed
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -148,6 +180,7 @@ public class Comprar extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField Can;
     private javax.swing.JButton Comprar;
     private javax.swing.JLabel Fondo;
     private javax.swing.JButton Regresar;
@@ -155,6 +188,5 @@ public class Comprar extends javax.swing.JFrame {
     private javax.swing.JTextField Servicio;
     private javax.swing.JLabel Titulito;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 }

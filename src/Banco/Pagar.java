@@ -111,16 +111,17 @@ public class Pagar extends javax.swing.JFrame {
 
     private void PagarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_PagarActionPerformed
         //BD
-        if (Pagar.getText().equals("Pagar")) {
-          String cant = Cantidad.getText();
-        if(Cantidad.getText().equals("") && Servicio.getText().equals("")){  
-              JOptionPane.showMessageDialog(null,"No puede dejar los campos vacios");
+         String cantidad = Cantidad.getText();
+        if(Servicio.getText().equals("") && Cantidad.getText().equals("")){  
+              JOptionPane.showMessageDialog(null,"Campos requeridos, no se pueden quedar vacios");
        }else{
              try { 
+                String id = "4";
                 RMI rmii;
                 Registry reg = LocateRegistry.getRegistry("127.0.0.1", 1099);
                 rmii = (RMI) reg.lookup("Objeto remoto");
-                rmii.Retirar(cant);   
+                rmii.Depositar(cantidad,id);  
+                JOptionPane.showMessageDialog(null,"¡ Muchas Gracias por tu pago!");
                }
             catch(RemoteException e) {
                 e.printStackTrace();
@@ -129,8 +130,6 @@ public class Pagar extends javax.swing.JFrame {
              ex.printStackTrace();
         }  
                  }
-    }
-        
     }//GEN-LAST:event_PagarActionPerformed
 
     private void CantidadKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_CantidadKeyTyped

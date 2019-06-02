@@ -10,6 +10,10 @@
 package Banco;
 
 import java.net.URL;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
@@ -98,7 +102,24 @@ public class Depositar extends javax.swing.JFrame {
     }//GEN-LAST:event_DineroKeyTyped
 
     private void DeposiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeposiActionPerformed
-        //Botón para depsitar el la BD aun no sirve
+          String Cantidad = Dinero.getText();
+        if(Dinero.getText().equals("")){ //Si no tienen nada pos no dejar que se mande 
+              JOptionPane.showMessageDialog(null,"No puede dejar este campo vacio");
+       }else{
+             try { 
+                String id= "4";
+                RMI rmii;
+                Registry reg = LocateRegistry.getRegistry("127.0.0.1", 1099);
+                rmii = (RMI) reg.lookup("Objeto remoto");
+                rmii.Depositar(Cantidad,id);
+               }
+            catch(RemoteException e) {
+                e.printStackTrace();
+            }
+             catch (NotBoundException ex) {
+             ex.printStackTrace();
+        }  
+                 }
     }//GEN-LAST:event_DeposiActionPerformed
 
     /**
