@@ -36,7 +36,7 @@ public class ObjetoRemoto extends UnicastRemoteObject implements RMI{
     public void Depositar(String canti,String id) throws RemoteException {
                 try{
                 con = DriverManager.getConnection("jdbc:mysql://localhost/cursi","root","");
-                String Consulta = "SELECT * FROM `cuentabancaria` WHERE clabe='300006420665613824' and saldo = '0.00'"; 
+                String Consulta = "SELECT * FROM `cuentabancaria` WHERE clabe='300006530157868032' and saldo = '0.00'"; 
                 PreparedStatement ps1 = con.prepareStatement(Consulta);
                 ResultSet rs1 = ps1.executeQuery();
                 
@@ -45,7 +45,7 @@ public class ObjetoRemoto extends UnicastRemoteObject implements RMI{
                      if(saldo.contains("0.00")){
                          String deposito = "UPDATE cuentabancaria SET idClabe=?,CLABE=?,saldo = ? WHERE idClabe=?";  
                          PreparedStatement pst2 = con.prepareStatement(deposito);
-                         String clabe="300006420665613824";
+                         String clabe="300006530157868032";
                          pst2.setString(1,id);
                          pst2.setString(2,clabe);
                          pst2.setString(3,canti);
@@ -113,6 +113,15 @@ public class ObjetoRemoto extends UnicastRemoteObject implements RMI{
                 pst2.setString(3,c);
                 pst2.setString(4,d);
                 int rs3 = pst2.executeUpdate();
+                
+//                String Update1 = "UPDATE cuentabancaria SET idClabe=?,CLABE=?,saldo = saldo - ?  WHERE idClabe=?";
+//                PreparedStatement pst21 = con.prepareStatement(Update1);
+//                pst21.setString(1,d);
+//                pst21.setString(2,b);
+//                pst21.setString(3,c);
+//                pst21.setString(4,d);
+//                int rs4 = pst21.executeUpdate();
+                
                  if(rs.next()){
                      JOptionPane.showMessageDialog(null,"Transferencia exitosa");
                      JOptionPane.showMessageDialog(null,"Se abonaron"+"\n"+c);

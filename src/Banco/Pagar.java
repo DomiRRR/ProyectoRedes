@@ -120,7 +120,7 @@ public class Pagar extends javax.swing.JFrame {
                 RMI rmii;
                 Registry reg = LocateRegistry.getRegistry("127.0.0.1", 1099);
                 rmii = (RMI) reg.lookup("Objeto remoto");
-                rmii.Depositar(cantidad,id);  
+                rmii.Retirar(cantidad,id);  
                 JOptionPane.showMessageDialog(null,"¡ Muchas Gracias por tu pago!");
                }
             catch(RemoteException e) {
