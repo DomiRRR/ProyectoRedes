@@ -107,7 +107,7 @@ public class Depositar extends javax.swing.JFrame {
               JOptionPane.showMessageDialog(null,"No puede dejar este campo vacio");
        }else{
              try { 
-                String id= "4";
+                String id= "1";
                 RMI rmii;
                 Registry reg = LocateRegistry.getRegistry("127.0.0.1", 1099);
                 rmii = (RMI) reg.lookup("Objeto remoto");

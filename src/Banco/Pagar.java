@@ -116,7 +116,7 @@ public class Pagar extends javax.swing.JFrame {
               JOptionPane.showMessageDialog(null,"Campos requeridos, no se pueden quedar vacios");
        }else{
              try { 
-                String id = "4";
+                String id = "1";
                 RMI rmii;
                 Registry reg = LocateRegistry.getRegistry("127.0.0.1", 1099);
                 rmii = (RMI) reg.lookup("Objeto remoto");

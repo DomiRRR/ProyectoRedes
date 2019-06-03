@@ -410,7 +410,7 @@ public class Registrarse extends javax.swing.JFrame {
 
     private void direcciKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_direcciKeyTyped
      int limite  = 45;
-     if (ApePaterno.getText().length() == limite){
+     if (direcci.getText().length() == limite){
          evt.consume();
          JOptionPane.showMessageDialog(rootPane, "La dirección no almacena más de 45 carácteres");
      }

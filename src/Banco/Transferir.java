@@ -125,7 +125,7 @@ public class Transferir extends javax.swing.JFrame {
        }else{
              try { 
                 String c1 = Cantidad.getText();
-                String id = "5";
+                String id = "2";
                 RMI rmii;
                 Registry reg = LocateRegistry.getRegistry("127.0.0.1", 1099);
                 rmii = (RMI) reg.lookup("Objeto remoto");

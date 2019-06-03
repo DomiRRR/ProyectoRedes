@@ -148,7 +148,7 @@ public class Bienvenido extends javax.swing.JFrame {
     private void ConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ConsultarActionPerformed
      //Intentando RMI
              try { 
-                String id= "4";
+                String id= "1";
                 RMI rmii;
                 Registry reg = LocateRegistry.getRegistry("127.0.0.1", 1099);
                 rmii = (RMI) reg.lookup("Objeto remoto");

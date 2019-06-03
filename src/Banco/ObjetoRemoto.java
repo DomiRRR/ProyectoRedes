@@ -36,7 +36,7 @@ public class ObjetoRemoto extends UnicastRemoteObject implements RMI{
     public void Depositar(String canti,String id) throws RemoteException {
                 try{
                 con = DriverManager.getConnection("jdbc:mysql://localhost/cursi","root","");
-                String Consulta = "SELECT * FROM `cuentabancaria` WHERE clabe='300007477990652992' and saldo = '0.00'"; 
+                String Consulta = "SELECT * FROM `cuentabancaria` WHERE clabe='300006420665613824' and saldo = '0.00'"; 
                 PreparedStatement ps1 = con.prepareStatement(Consulta);
                 ResultSet rs1 = ps1.executeQuery();
                 
@@ -45,7 +45,7 @@ public class ObjetoRemoto extends UnicastRemoteObject implements RMI{
                      if(saldo.contains("0.00")){
                          String deposito = "UPDATE cuentabancaria SET idClabe=?,CLABE=?,saldo = ? WHERE idClabe=?";  
                          PreparedStatement pst2 = con.prepareStatement(deposito);
-                         String clabe="300007477990652992";
+                         String clabe="300006420665613824";
                          pst2.setString(1,id);
                          pst2.setString(2,clabe);
                          pst2.setString(3,canti);
@@ -82,6 +82,18 @@ public class ObjetoRemoto extends UnicastRemoteObject implements RMI{
         try {
             //No se si funcione al 100%, funciona con una cuenta a otra jajaja pero no verifica si la otra tiene dinero
                 con = DriverManager.getConnection("jdbc:mysql://localhost/cursi","root","");
+                
+                String Consulta = "SELECT * FROM cuentabancaria WHERE clabe=? and saldo = '0.00'"; 
+                PreparedStatement ps1 = con.prepareStatement(Consulta);
+                ps1.setString(1,a);
+                ResultSet rs1 = ps1.executeQuery();
+                if(rs1.next()){
+                     String saldo = rs1.getString("saldo");
+                     if(saldo.contains("0.00")){
+                         JOptionPane.showMessageDialog(null, "No cuentas con fondos para transferir, procede a depositar como recomendación"); 
+                }
+                }else{
+                     
                 String SQL = "SELECT * FROM cuentabancaria WHERE CLABE=?";
                 PreparedStatement pst = con.prepareStatement(SQL);
                 pst.setString(1,a);
@@ -105,7 +117,7 @@ public class ObjetoRemoto extends UnicastRemoteObject implements RMI{
                      JOptionPane.showMessageDialog(null,"Transferencia exitosa");
                      JOptionPane.showMessageDialog(null,"Se abonaron"+"\n"+c);
                 }
-           
+                }
                 //Statement st = buscar.createStatement(); //Crear el statement
                 //st.executeQuery("SELECT COUNT(idClientes) AS i FROM clientes WHERE correo = '"+user+"'"+"AND contraseña='"+contra+"'");
         } catch (SQLException ex) {
@@ -121,7 +133,7 @@ public class ObjetoRemoto extends UnicastRemoteObject implements RMI{
     public void Retirar(String Quantitty,String id) throws RemoteException {
             try{
                 con = DriverManager.getConnection("jdbc:mysql://localhost/cursi","root","");
-                String Consulta = "SELECT * FROM `cuentabancaria` WHERE clabe='300007477990652992' and saldo = '0.00'"; 
+                String Consulta = "SELECT * FROM `cuentabancaria` WHERE clabe='300006530157868032' and saldo = '0.00'"; 
                 PreparedStatement ps1 = con.prepareStatement(Consulta);
                 ResultSet rs1 = ps1.executeQuery();
                 if(rs1.next()){
@@ -132,7 +144,7 @@ public class ObjetoRemoto extends UnicastRemoteObject implements RMI{
                 }else{
                         String retiro = "UPDATE cuentabancaria SET idClabe=?,CLABE= ? ,saldo = saldo - ? WHERE idClabe=?";  
                         PreparedStatement pst2 = con.prepareStatement(retiro);
-                        String clabe="300007477990652992";
+                        String clabe="300006530157868032";
                         pst2.setString(1,id);
                         pst2.setString(2,clabe);
                         pst2.setString(3,Quantitty);
